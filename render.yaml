@@ -1,0 +1,54 @@
+# render.yaml — Render Blueprint
+# Cách dùng: đẩy code lên GitHub, vào Render Dashboard > New > Blueprint,
+# trỏ tới repo này. Render sẽ tự đọc file này và tạo đúng service.
+#
+# LƯU Ý QUAN TRỌNG VỀ DỮ LIỆU:
+# Free tier của Render KHÔNG hỗ trợ persistent disk -> mỗi lần deploy lại
+# hoặc service tự "ngủ" rồi thức dậy, file database SQLite (data/safepay.db)
+# sẽ bị XOÁ SẠCH. Vì đây là app xử lý TIỀN THẬT, bạn nên dùng gói trả phí
+# (Starter, ~$7/tháng) để gắn "Persistent Disk" — cấu hình disk bên dưới đã
+# chuẩn bị sẵn, chỉ cần chọn plan "starter" khi tạo.
+
+services:
+  - type: web
+    name: safepay-app
+    runtime: node
+    plan: starter          # đổi thành "free" nếu chỉ muốn demo tạm (dữ liệu sẽ mất)
+    region: singapore       # gần Việt Nam nhất trong các region của Render
+    buildCommand: npm install
+    startCommand: npm start
+    disk:
+      name: safepay-data
+      mountPath: /opt/render/project/src/data
+      sizeGB: 1
+    envVars:
+      - key: NODE_VERSION
+        value: 20.18.1
+      - key: PORT
+        value: 10000
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: ADMIN_NAME
+        value: Admin
+      - key: SERVICE_FEE_PERCENT
+        value: 1
+      - key: VNPAY_TMN_CODE
+        sync: false
+      - key: VNPAY_HASH_SECRET
+        sync: false
+      - key: VNPAY_URL
+        value: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
+      - key: VNPAY_RETURN_URL
+        value: https://safepay-app.onrender.com/api/payments/vnpay/return
+      - key: VNPAY_IPN_URL
+        value: https://safepay-app.onrender.com/api/payments/vnpay/ipn
+      - key: COMPANY_BANK_NAME
+        sync: false
+      - key: COMPANY_BANK_ACCOUNT
+        sync: false
+      - key: COMPANY_BANK_HOLDER
+        sync: false

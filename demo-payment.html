@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thanh toán (DEMO) – SafePay</title>
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body style="display:flex;align-items:center;justify-content:center;min-height:100vh;">
+
+<div class="card" style="max-width:420px;width:100%;">
+  <div class="alert-box alert-warning">
+    ⚠️ <b>Đây là trang DEMO.</b> Chưa kết nối cổng thanh toán thật (VNPay).
+    Không có tiền thật nào bị trừ. Xem hướng dẫn trong README để bật thanh toán thật.
+  </div>
+
+  <h2>Xác nhận thanh toán</h2>
+  <div class="info-row"><span>Mã phòng</span><span id="d-code" style="font-weight:700;"></span></div>
+  <div class="info-row"><span>Số tiền</span><span id="d-amount" style="font-weight:700;color:var(--accent);"></span></div>
+
+  <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:20px;" onclick="confirmDemo()">
+    ✓ Giả lập thanh toán thành công
+  </button>
+  <button class="btn" style="width:100%;justify-content:center;margin-top:8px;" onclick="location.href='/'">
+    Huỷ, quay lại
+  </button>
+  <p id="d-status" class="sub" style="margin-top:14px;margin-bottom:0;text-align:center;"></p>
+</div>
+
+<script src="/js/api.js"></script>
+<script>
+  const params = new URLSearchParams(location.search);
+  const ref = params.get('ref');
+  const amount = Number(params.get('amount') || 0);
+  const code = params.get('code') || '';
+
+  document.getElementById('d-code').textContent = code;
+  document.getElementById('d-amount').textContent = '₫' + amount.toLocaleString('vi-VN');
+
+  async function confirmDemo() {
+    const statusEl = document.getElementById('d-status');
+    statusEl.textContent = 'Đang xử lý...';
+    try {
+      const res = await fetch('/api/payments/demo/confirm', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + API.token },
+        body: JSON.stringify({ ref }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Có lỗi xảy ra');
+      location.href = '/?vnpay_result=success&ref=' + encodeURIComponent(ref);
+    } catch (e) {
+      statusEl.textContent = '❌ ' + e.message;
+    }
+  }
+</script>
+</body>
+</html>
