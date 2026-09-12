@@ -6,7 +6,7 @@
 <title>SafePay – Giao dịch trung gian an toàn</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
@@ -16,53 +16,152 @@
     <div class="logo-icon">🛡</div>
     SafePay
   </div>
+  <div class="nav-links">
+    <a href="#steps">Quy trình</a>
+    <a href="#why">Vì sao chọn SafePay</a>
+  </div>
   <div class="actions" id="nav-actions"></div>
 </nav>
 
 <!-- HOME -->
 <div class="page" id="page-home">
-  <div class="home-intro">
-    <h1>Giao dịch an toàn,<br>không lo lừa đảo.</h1>
-    <p>SafePay giữ tiền trung gian — chỉ giải ngân khi hai bên đồng ý hoàn tất.</p>
-    <div class="stat-row">
+
+  <section class="hero">
+    <span class="pill-tag"><span class="dot"></span>Trung gian giữ tiền an toàn</span>
+    <h1>Giao dịch online an toàn<br>cùng SafePay</h1>
+    <p class="lead">Nền tảng hỗ trợ giữ tiền trung gian an toàn cho đến khi cả người mua và người bán hoàn tất giao dịch với sự hài lòng.</p>
+    <div class="hero-cta">
+      <a href="#app" class="btn btn-primary btn-lg">Tạo phòng miễn phí</a>
+      <a href="#steps" class="btn btn-ghost btn-lg">Xem quy trình</a>
+    </div>
+    <div class="trust-row">
       <div class="stat-chip"><strong>1%</strong> phí dịch vụ</div>
       <div class="stat-chip"><strong>VNPay</strong> thanh toán</div>
-      <div class="stat-chip"><strong>24/7</strong> bảo vệ</div>
+      <div class="stat-chip"><strong>24/7</strong> bảo vệ &amp; hỗ trợ tranh chấp</div>
     </div>
-  </div>
+  </section>
 
-  <div class="card" style="max-width:480px;margin:0 auto 14px;">
-    <div id="auth-box"></div>
-  </div>
-
-  <div class="card" style="max-width:480px;margin:0 auto;" id="room-box">
-    <div class="tab-row">
-      <div class="tab active" data-tab="create" onclick="UI.switchTab('create')">Tạo phòng mới</div>
-      <div class="tab" data-tab="join" onclick="UI.switchTab('join')">Tham gia phòng</div>
+  <div class="app-shell" id="app">
+    <div class="card app-card app-card-auth">
+      <div id="auth-box"></div>
     </div>
 
-    <div id="tab-create">
-      <div class="role-select">
-        <div class="role-card active" data-role="buyer" onclick="UI.selectRole('buyer')">🛒<b>Người mua</b></div>
-        <div class="role-card" data-role="seller" onclick="UI.selectRole('seller')">📦<b>Người bán</b></div>
+    <div class="app-card" id="room-box">
+      <div class="tab-row">
+        <div class="tab active" data-tab="create" onclick="UI.switchTab('create')">Tạo phòng mới</div>
+        <div class="tab" data-tab="join" onclick="UI.switchTab('join')">Tham gia phòng</div>
       </div>
-      <div class="form-group"><label>Tiêu đề giao dịch</label><input id="f-title" placeholder="VD: Tài khoản Facebook 10k follow"></div>
-      <div class="form-group"><label>Mô tả</label><textarea id="f-desc" rows="2" placeholder="Mô tả sản phẩm / dịch vụ..."></textarea></div>
-      <div class="grid-2">
-        <div class="form-group"><label>Số tiền (VNĐ)</label><input id="f-amount" type="number" placeholder="500000" oninput="UI.updateFeeHint()"></div>
-        <div class="form-group"><label>Thời hạn kiểm tra (giờ)</label><input id="f-hours" type="number" value="24"></div>
+
+      <div id="tab-create">
+        <div class="role-select">
+          <div class="role-card active" data-role="buyer" onclick="UI.selectRole('buyer')">🛒<b>Người mua</b><span style="display:block;font-size:11px;color:var(--text3);font-weight:400;margin-top:2px;">Thanh toán &amp; nhận hàng</span></div>
+          <div class="role-card" data-role="seller" onclick="UI.selectRole('seller')">📦<b>Người bán</b><span style="display:block;font-size:11px;color:var(--text3);font-weight:400;margin-top:2px;">Giao hàng &amp; nhận tiền</span></div>
+        </div>
+        <div class="form-group"><label>Tiêu đề giao dịch</label><input id="f-title" placeholder="VD: Tài khoản Facebook 10k follow"></div>
+        <div class="form-group"><label>Mô tả</label><textarea id="f-desc" rows="2" placeholder="Mô tả sản phẩm / dịch vụ..."></textarea></div>
+        <div class="grid-2">
+          <div class="form-group"><label>Số tiền (VNĐ)</label><input id="f-amount" type="number" placeholder="500000" oninput="UI.updateFeeHint()"></div>
+          <div class="form-group"><label>Thời hạn kiểm tra (giờ)</label><input id="f-hours" type="number" value="24"></div>
+        </div>
+        <p id="fee-hint" style="color:var(--text3);font-size:12px;margin-bottom:14px;"></p>
+        <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="UI.createRoom()">Tạo phòng giao dịch</button>
       </div>
-      <p id="fee-hint" style="color:var(--text3);font-size:12px;margin-bottom:14px;"></p>
-      <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="UI.createRoom()">Tạo phòng giao dịch</button>
+
+      <div id="tab-join" class="hidden">
+        <div class="form-group"><label>Mã phòng</label><input id="f-code" placeholder="SP-XXXXXX" style="text-transform:uppercase;letter-spacing:2px;font-family:monospace;font-weight:700;"></div>
+        <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="UI.joinRoom()">Tham gia</button>
+      </div>
     </div>
 
-    <div id="tab-join" class="hidden">
-      <div class="form-group"><label>Mã phòng</label><input id="f-code" placeholder="SP-XXXXXX" style="text-transform:uppercase;letter-spacing:2px;font-family:monospace;font-weight:700;"></div>
-      <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="UI.joinRoom()">Tham gia</button>
-    </div>
+    <div class="card" style="margin-top:14px;" id="my-rooms-box"></div>
   </div>
 
-  <div class="card" style="max-width:480px;margin:14px auto 0;" id="my-rooms-box"></div>
+  <section class="section" id="steps">
+    <div class="section-inner">
+      <div class="section-head">
+        <span class="pill-tag"><span class="dot"></span>Quy trình</span>
+        <h2>Bốn bước, một giao dịch trọn vẹn</h2>
+        <p>Từ lúc tạo phòng đến khi tất toán, mọi thứ đều minh bạch và có thể tra soát.</p>
+      </div>
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-num">01</div>
+          <h3>Tạo phòng &amp; gửi mã</h3>
+          <p>Tạo phòng giao dịch và gửi mã phòng cho đối tác để cùng tham gia.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-num">02</div>
+          <h3>Thanh toán qua VNPay</h3>
+          <p>Người mua thanh toán vào tài khoản trung gian, tiền được giữ an toàn.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-num">03</div>
+          <h3>Bàn giao &amp; kiểm tra</h3>
+          <p>Người bán giao hàng/dịch vụ; người mua kiểm tra trong thời hạn đã đặt.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-num">04</div>
+          <h3>Tất toán tự động</h3>
+          <p>Người mua xác nhận hoàn tất, tiền được giải ngân về người bán.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt" id="why">
+    <div class="section-inner">
+      <div class="section-head">
+        <span class="pill-tag"><span class="dot"></span>Cam kết</span>
+        <h2>Vì sao chọn SafePay</h2>
+        <p>Xây dựng riêng cho các giao dịch online cần một bên trung gian đáng tin cậy.</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-list">
+          <div class="feature-card">
+            <div class="fig">100%</div>
+            <h3>Giữ tiền an toàn</h3>
+            <p>Chỉ tất toán khi người mua xác nhận hài lòng với sản phẩm được giao.</p>
+          </div>
+          <div class="feature-card">
+            <div class="fig">⚖️</div>
+            <h3>Xử lý tranh chấp</h3>
+            <p>Admin phân xử công bằng dựa trên lịch sử chat và bằng chứng giao dịch.</p>
+          </div>
+          <div class="feature-card">
+            <div class="fig">🧾</div>
+            <h3>Biên bản đầy đủ</h3>
+            <p>Toàn bộ lịch sử giao dịch, chat và thanh toán được lưu trữ rõ ràng.</p>
+          </div>
+          <div class="feature-card">
+            <div class="fig">⚡</div>
+            <h3>Cập nhật tức thời</h3>
+            <p>Mọi thay đổi trạng thái phòng hiển thị minh bạch cho cả hai bên.</p>
+          </div>
+        </div>
+        <div class="mock-card">
+          <div>
+            <div style="font-size:13px;font-weight:600;color:rgba(255,255,255,0.6);">Nhật ký phòng giao dịch</div>
+            <div class="mock-log">
+              <div class="mock-row"><span class="mock-time">09:41</span><span class="mock-dot"></span>Tạo phòng</div>
+              <div class="mock-row"><span class="mock-time">09:43</span><span class="mock-dot"></span>Đã nhận 2.500.000₫</div>
+              <div class="mock-row"><span class="mock-time">10:12</span><span class="mock-dot"></span>Đã bàn giao</div>
+              <div class="mock-row"><span class="mock-time">10:20</span><span class="mock-dot"></span>Xác nhận hoàn tất</div>
+            </div>
+          </div>
+          <div>
+            <div class="mock-avatars">
+              <div class="mock-avatar buyer">M</div>
+              <div class="mock-line"></div>
+              <div class="mock-avatar brand">S</div>
+              <div class="mock-line"></div>
+              <div class="mock-avatar seller">B</div>
+            </div>
+            <p class="mock-caption" style="margin-top:10px;">Người mua xác nhận, tiền mới về người bán.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 </div>
 
 <!-- ROOM -->
@@ -106,6 +205,35 @@
   <div class="card"><h2>Chờ giải ngân / hoàn tiền</h2><div id="admin-payouts"></div></div>
   <div class="card"><h2>Tranh chấp</h2><div id="admin-disputes"></div></div>
 </div>
+
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="logo"><div class="logo-icon">🛡</div>SafePay</div>
+      <p>Nền tảng trung gian giữ tiền an toàn cho các giao dịch online — chỉ giải ngân khi hai bên cùng hài lòng.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Sản phẩm</h4>
+      <ul>
+        <li><a href="#app">Tạo phòng giao dịch</a></li>
+        <li><a href="#steps">Quy trình 4 bước</a></li>
+        <li><a href="#why">Vì sao chọn SafePay</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Tài khoản</h4>
+      <ul>
+        <li><a href="#app" onclick="UI.switchAuthTab && UI.switchAuthTab('login')">Đăng nhập</a></li>
+        <li><a href="#app" onclick="UI.switchAuthTab && UI.switchAuthTab('register')">Đăng ký</a></li>
+        <li><a href="#" onclick="Router.go('admin');return false;">Admin</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 SafePay. Nền tảng trung gian giao dịch an toàn và minh bạch.</span>
+    <span>Phí dịch vụ 1% mỗi giao dịch</span>
+  </div>
+</footer>
 
 <div id="toast" class="toast hidden"></div>
 
