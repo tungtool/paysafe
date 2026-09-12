@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SafePay – Giao dịch trung gian an toàn</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<nav>
+  <div class="logo" onclick="Router.go('home')">
+    <div class="logo-icon">🛡</div>
+    SafePay
+  </div>
+  <div class="actions" id="nav-actions"></div>
+</nav>
+
+<!-- HOME -->
+<div class="page" id="page-home">
+  <div class="home-intro">
+    <h1>Giao dịch an toàn,<br>không lo lừa đảo.</h1>
+    <p>SafePay giữ tiền trung gian — chỉ giải ngân khi hai bên đồng ý hoàn tất.</p>
+    <div class="stat-row">
+      <div class="stat-chip"><strong>1%</strong> phí dịch vụ</div>
+      <div class="stat-chip"><strong>VNPay</strong> thanh toán</div>
+      <div class="stat-chip"><strong>24/7</strong> bảo vệ</div>
+    </div>
+  </div>
+
+  <div class="card" style="max-width:480px;margin:0 auto 14px;">
+    <div id="auth-box"></div>
+  </div>
+
+  <div class="card" style="max-width:480px;margin:0 auto;" id="room-box">
+    <div class="tab-row">
+      <div class="tab active" data-tab="create" onclick="UI.switchTab('create')">Tạo phòng mới</div>
+      <div class="tab" data-tab="join" onclick="UI.switchTab('join')">Tham gia phòng</div>
+    </div>
+
+    <div id="tab-create">
+      <div class="role-select">
+        <div class="role-card active" data-role="buyer" onclick="UI.selectRole('buyer')">🛒<b>Người mua</b></div>
+        <div class="role-card" data-role="seller" onclick="UI.selectRole('seller')">📦<b>Người bán</b></div>
+      </div>
+      <div class="form-group"><label>Tiêu đề giao dịch</label><input id="f-title" placeholder="VD: Tài khoản Facebook 10k follow"></div>
+      <div class="form-group"><label>Mô tả</label><textarea id="f-desc" rows="2" placeholder="Mô tả sản phẩm / dịch vụ..."></textarea></div>
+      <div class="grid-2">
+        <div class="form-group"><label>Số tiền (VNĐ)</label><input id="f-amount" type="number" placeholder="500000" oninput="UI.updateFeeHint()"></div>
+        <div class="form-group"><label>Thời hạn kiểm tra (giờ)</label><input id="f-hours" type="number" value="24"></div>
+      </div>
+      <p id="fee-hint" style="color:var(--text3);font-size:12px;margin-bottom:14px;"></p>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="UI.createRoom()">Tạo phòng giao dịch</button>
+    </div>
+
+    <div id="tab-join" class="hidden">
+      <div class="form-group"><label>Mã phòng</label><input id="f-code" placeholder="SP-XXXXXX" style="text-transform:uppercase;letter-spacing:2px;font-family:monospace;font-weight:700;"></div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="UI.joinRoom()">Tham gia</button>
+    </div>
+  </div>
+
+  <div class="card" style="max-width:480px;margin:14px auto 0;" id="my-rooms-box"></div>
+</div>
+
+<!-- ROOM -->
+<div class="page" id="page-room">
+  <div class="room-layout">
+    <div>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+          <span id="room-badge" class="badge"></span>
+          <span style="font-size:12px;color:var(--text2);">Mã: <span class="copy-code" id="room-code-display" onclick="UI.copyRoomCode()"></span></span>
+        </div>
+        <h2 id="room-title" style="margin-bottom:14px;"></h2>
+        <div id="room-info-rows"></div>
+      </div>
+
+      <div class="card">
+        <h3>Chat phòng giao dịch</h3>
+        <div class="chat-box" id="chat-box"></div>
+        <div class="chat-input-row">
+          <input id="chat-input" placeholder="Nhắn tin..." onkeydown="if(event.key==='Enter'){event.preventDefault();UI.sendChat();}">
+          <button class="btn btn-primary btn-sm" onclick="UI.sendChat()">Gửi</button>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card" id="action-panel"></div>
+      <div class="card">
+        <h3>Lịch sử giao dịch</h3>
+        <div id="tx-list" style="margin-top:8px;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div class="page" id="page-admin">
+  <h1>Bảng điều khiển Admin</h1>
+  <p class="sub">Xác nhận giải ngân & xử lý tranh chấp</p>
+  <div class="card"><h2>Tổng quan</h2><div id="admin-stats"></div></div>
+  <div class="card"><h2>Chờ giải ngân / hoàn tiền</h2><div id="admin-payouts"></div></div>
+  <div class="card"><h2>Tranh chấp</h2><div id="admin-disputes"></div></div>
+</div>
+
+<div id="toast" class="toast hidden"></div>
+
+<!-- MUSIC PLAYER -->
+<div class="music-bar-wrap" id="music-bar-wrap">
+  <div class="music-main">
+    <div class="music-thumb" id="music-thumb">🎵</div>
+    <div class="music-info">
+      <div class="music-title" id="music-title">Chọn bài để nghe</div>
+      <div class="music-artist">Sơn Tùng M-TP</div>
+    </div>
+    <div class="music-center">
+      <div class="music-controls">
+        <button class="mbtn" onclick="MP.prev()" title="Trước">⏮</button>
+        <button class="mbtn play" id="play-btn" onclick="MP.toggle()">▶</button>
+        <button class="mbtn" onclick="MP.next()" title="Tiếp">⏭</button>
+      </div>
+      <div class="music-progress-wrap">
+        <span class="music-time" id="music-time-cur">0:00</span>
+        <div class="music-prog-bar" id="prog-bar" onclick="MP.seek(event)">
+          <div class="music-prog-fill" id="prog-fill" style="width:0%"></div>
+        </div>
+        <span class="music-time" id="music-time-tot">0:00</span>
+      </div>
+    </div>
+    <button class="music-list-btn" onclick="MP.toggleList()" title="Danh sách nhạc">☰ Playlist</button>
+  </div>
+  <div class="playlist-panel hidden" id="playlist-panel">
+    <div class="playlist-head">Sơn Tùng M-TP · 18 bài hát</div>
+    <div id="pl-list"></div>
+  </div>
+</div>
+
+<script src="/js/api.js"></script>
+<script src="/js/app.js"></script>
+<script src="/js/music.js"></script>
+</body>
+</html>
