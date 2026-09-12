@@ -1,6 +1,6 @@
 {
   "name": "safepay-escrow-app",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Nền tảng giao dịch trung gian (escrow) - backend + frontend thật, không mô phỏng",
   "main": "server/index.js",
   "scripts": {
